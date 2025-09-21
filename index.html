@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>390安全卫士 - 专业级电脑安全防护软件</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #e94822;
+            --secondary-color: #4caf50;
+            --accent-color: #ffeb3b;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --gray-color: #666;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+        
+        /* 弹窗样式 */
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .popup-close:hover {
+            color: #333;
+        }
+        
+        /* 顶部导航栏 */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+        
+        header.scrolled {
+            padding: 5px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* 390安全卫士logo设计 */
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: var(--transition);
+            font-size: 16px;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        /* 主横幅 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), #d03715);
+            color: white;
+            padding: 100px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0,0 L100,0 L100,100 Z" /></svg>');
+            background-size: cover;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 25px;
+            text-shadow: 0 3px 15px rgba(0,0,0,0.3);
+            line-height: 1.2;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero p {
+            font-size: 22px;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(76,175,80,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        .download-btn:hover::before {
+            left: 100%;
+        }
+        
+        .download-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76,175,80,0.5);
+        }
+        
+        .protect-btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(255,235,59,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .protect-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+            transition: all 0.6s;
+        }
+        
+        .protect-btn:hover::before {
+            left: 100%;
+        }
+        
+        .protect-btn:hover {
+            background-color: #ffc107;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,235,59,0.5);
+        }
+        
+        /* 特性部分 */
+        .features {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 70px;
+            color: var(--primary-color);
+            position: relative;
+            font-weight: 700;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 120px;
+            height: 5px;
+            background-color: var(--secondary-color);
+            margin: 15px auto 0;
+            border-radius: 3px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background-color: var(--light-color);
+            padding: 35px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border-top: 5px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(233,72,34,0.05);
+            border-radius: 50% 0 0 0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            color: var(--secondary-color);
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .feature-card p {
+            color: var(--gray-color);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        
+        /* 图片展示区域 */
+        .software-showcase {
+            padding: 100px 0;
+            background-color: var(--light-color);
+        }
+        
+        .image-gallery {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.15);
+            background-color: white;
+            padding: 20px;
+        }
+        
+        .gallery-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .gallery-slide {
+            min-width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            display: block;
+            background-color: white;
+            margin: 0 auto;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+        
+        .gallery-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        /* 图片占位符样式 - 当src为空或无效时显示 */
+        .gallery-image[src="#"] {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f5f5 25%, #e0e0e0 25%, #e0e0e0 50%, #f5f5f5 50%, #f5f5f5 75%, #e0e0e0 75%, #e0e0e0 100%);
+            background-size: 20px 20px;
+            position: relative;
+            border: 1px dashed #ccc;
+        }
+        
+        .gallery-image[src="#"]::after {
+            content: attr(data-placeholder);
+            position: absolute;
+            font-size: 16px;
+            color: var(--gray-color);
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .gallery-caption h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .gallery-caption p {
+            font-size: 18px;
+            margin-bottom: 0;
+            opacity: 0.9;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .image-gallery:hover .gallery-controls {
+            opacity: 1;
+        }
+        
+        .gallery-control {
+            background-color: rgba(255,255,255,0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .gallery-control:hover {
+            background-color: white;
+            transform: scale(1.1);
+        }
+        
+        .gallery-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .gallery-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .gallery-indicator.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        /* 底部下载区域 */
+        .download-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary-color), #d03715);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,100 L100,0 L100,100 Z" /></svg>');
+            background-size: cover;
+        }
+        
+        .download-section h2 {
+            font-size: 42px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .download-section p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+        
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .download-button {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            color: var(--primary-color);
+            padding: 18px 35px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s;
+        }
+        
+        .download-button:hover::before {
+            left: 100%;
+        }
+        
+        .download-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .download-icon {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+        
+        /* 自动播放广告条 */
+        .ad-banner {
+            background-color: var(--warning-color);
+            color: var(--light-color);
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-banner:hover {
+            background-color: #e68900;
+        }
+
+        .ad-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* 提醒升级弹窗 */
+        .upgrade-reminder {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--light-color);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 350px;
+            z-index: 999;
+            display: none;
+            animation: slideInRight 0.4s ease-out;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .upgrade-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .upgrade-reminder p {
+            margin-bottom: 15px;
+            color: var(--gray-color);
+        }
+
+        .upgrade-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-color);
+            transition: var(--transition);
+        }
+
+        .upgrade-close:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        .upgrade-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .upgrade-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color-dark);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 60px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 28px;
+                cursor: pointer;
+                color: var(--dark-color);
+            }
+
+            .download-button {
+                padding: 15px 25px;
+                font-size: 16px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        /* 移动菜单按钮 */
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--dark-color);
+            transition: var(--transition);
+        }
+
+        .mobile-menu-btn:hover {
+            color: var(--primary-color);
+            transform: rotate(10deg);
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* 安全标志 */
+        .security-badge {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .security-shield {
+            width: 40px;
+            height: 40px;
+        }
+
+        .security-badge span {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        /* 滚动监听入场动画 */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- 自动播放广告条 -->
+    <div class="ad-banner">
+        限时优惠：390安全卫士专业版首年半价，立即抢购！
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <header id="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <!-- 新的SVG Logo -->
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" class="security-logo">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="var(--primary-color)"/>
+                                <stop offset="100%" stop-color="var(--secondary-color)"/>
+                            </linearGradient>
+                            <filter id="logoShadow" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.2)"/>
+                            </filter>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" fill="var(--logo-bg-color)" stroke="url(#logoGradient)" stroke-width="5" filter="url(#logoShadow)"/>
+                        <path d="M35,30 C35,25 40,25 40,30 L40,50 C40,55 45,55 45,50 L45,40 L50,40 L50,50 C50,55 55,55 55,50 L55,30 C55,25 60,25 60,30 L60,60 C60,65 55,65 55,60 L55,50 L50,50 L50,60 C50,65 45,65 45,60 L45,60 L40,60 C40,65 35,65 35,60 L35,30 Z" fill="url(#logoGradient)"/>
+                        <path d="M30,40 L30,60 L40,60 L40,40 Z M60,40 L60,60 L70,60 L70,40 Z" fill="var(--primary-color)" opacity="0.8"/>
+                    </svg>
+                </div>
+                <span>安全卫士</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">功能特点</a></li>
+                    <li><a href="#recommended">推荐软件</a></li>
+                    <li><a href="https://www.123865.com/s/Als2jv-Skbwd" target="_blank">立即下载</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </header>
+
+    <!-- 主横幅 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>390安全卫士<br>全方位电脑安全防护</h1>
+                <p>实时查杀病毒木马，优化系统性能，保护隐私安全，让您的电脑焕然一新！</p>
+                <div class="hero-buttons">
+                    <a href="https://www.123865.com/s/Als2jv-Skbwd" target="_blank" class="download-btn" id="main-download-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        立即免费下载
+                    </a>
+                    <button class="protect-btn" id="one-click-protect">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        一键保护
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 安全认证标志 -->
+        <div class="security-badge">
+            <svg viewBox="0 0 100 100" class="security-shield">
+                <path d="M50,10 L90,30 L90,70 C90,85 75,95 50,100 C25,95 10,85 10,70 L10,30 Z" fill="none" stroke="var(--success-color)" stroke-width="3"/>
+                <circle cx="50" cy="50" r="30" fill="rgba(76,175,80,0.1)"/>
+                <path d="M35,55 L45,65 L65,45" stroke="var(--success-color)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>安全认证</span>
+        </div>
+    </section>
+
+    <!-- 特性部分 -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">强大功能，全面保护</h2>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>实时病毒查杀</h3>
+                    <p>采用先进的病毒扫描引擎，实时监控系统中的恶意软件和病毒，确保您的电脑安全无忧。</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">⚡</div>
+                    <h3>系统优化加速</h3>
+                    <p>智能分析系统性能瓶颈，清理无用垃圾文件，优化系统设置，让您的电脑运行如飞。</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🔒</div>
+                    <h3>隐私保护</h3>
+                    <p>保护您的个人隐私信息，清理浏览痕迹，防止个人信息泄露，让您的上网更加安全。</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🚀</div>
+                    <h3>开机加速</h3>
+                    <p>管理开机启动项，优化启动流程，让您的电脑开机速度提升30%以上。</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">📊</div>
+                    <h3>系统体检</h3>
+                    <p>全面检测系统健康状况，提供专业的优化建议，让您的电脑保持最佳状态。</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🔔</div>
+                    <h3>智能提醒</h3>
+                    <p>实时监控系统状态，发现问题及时提醒，让您随时了解电脑的安全状况。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 推荐软件 - 替换为图片展示 -->
+    <section id="recommended" class="recommended-software">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">软件展示</h2>
+            <p style="text-align: center; margin-bottom: 40px; color: #666; font-size: 18px;" class="animate-on-scroll">390安全卫士 - 全面保护您的电脑安全</p>
+            
+            <div class="image-gallery animate-on-scroll">
+                <div class="gallery-slides" id="gallery-slides">
+                    <!-- 只显示390安全卫士 -->
+                    <div class="gallery-slide active">
+                        <!-- 390安全卫士图片 -->
+                        <div class="gallery-image-container">
+                            <img src="indx.png" alt="390安全卫士" class="gallery-image">
+                            <div class="gallery-overlay">
+                                <div class="gallery-controls">
+                                    <span class="gallery-feature">全面防护</span>
+                                    <span class="gallery-feature">系统优化</span>
+                                    <span class="gallery-feature">隐私保护</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gallery-caption">
+                            <h3>390安全卫士</h3>
+                            <p>全面保护您的电脑安全，系统优化加速，隐私保护，开机加速，系统体检和智能提醒</p>
+                            <a href="https://www.123865.com/s/Als2jv-Skbwd" target="_blank" class="download-btn">立即下载</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部下载区域 -->
+    <section id="download" class="download-section">
+        <div class="container">
+            <h2 class="animate-on-scroll">立即下载390安全卫士</h2>
+            <p class="animate-on-scroll">全面保护您的电脑安全，让您的电脑运行更加流畅稳定！</p>
+            <div class="download-buttons animate-on-scroll">
+                <!-- 这里预留填写下载链接的地方 -->
+                <a href="https://www.123865.com/s/Als2jv-Skbwd" target="_blank" class="download-button" id="free-download-btn">
+                    <span class="download-icon">⬇️</span>
+                    立即下载（免费版）
+                </a>
+                <a href="https://www.123865.com/s/Als2jv-Skbwd" target="_blank" class="download-button">
+                    <span class="download-icon">💎</span>
+                    升级专业版
+                </a>
+            </div>
+            <p style="margin-top: 30px; font-size: 16px; opacity: 0.9; position: relative; z-index: 2;" class="animate-on-scroll">支持Windows 7/8/10/11 | 无捆绑软件 | 永久免费更新</p>
+        </div>
+    </section>
+
+    <!-- 弹窗和覆盖层 -->
+    <div class="popup-overlay" id="popup-overlay"></div>
+    <div class="popup" id="popup">
+        <span class="popup-close" id="popup-close">&times;</span>
+        <h3 style="margin-bottom: 15px; color: var(--primary-color);">重要通知</h3>
+        <p style="margin-bottom: 20px;">您的电脑存在安全风险，建议立即安装390安全卫士进行全面扫描和修复！</p>
+        <a href="https://www.123865.com/s/Als2jv-Skbwd" target="_blank" class="download-btn" style="display: block; text-align: center;">立即安装</a>
+    </div>
+
+    <!-- 升级提醒弹窗 -->
+    <div class="upgrade-reminder" id="upgrade-reminder">
+        <span class="upgrade-close" id="upgrade-close">&times;</span>
+        <div class="upgrade-title">升级提醒</div>
+        <p>升级到专业版，享受更多高级功能和专属服务！</p>
+        <a href="#" class="upgrade-btn">立即升级</a>
+    </div>
+
+    <script>
+        // 自动弹出广告
+        function showPopup() {
+            const popup = document.getElementById('popup');
+            const overlay = document.getElementById('popup-overlay');
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+        
+        // 关闭弹窗
+        document.getElementById('popup-close').addEventListener('click', () => {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('popup-overlay').style.display = 'none';
+        });
+        
+        // 点击覆盖层关闭弹窗
+        document.getElementById('popup-overlay').addEventListener('click', () => {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('popup-overlay').style.display = 'none';
+        });
+        
+        // 显示升级提醒
+        function showUpgradeReminder() {
+            const reminder = document.getElementById('upgrade-reminder');
+            reminder.style.display = 'block';
+        }
+        
+        // 关闭升级提醒
+        document.getElementById('upgrade-close').addEventListener('click', () => {
+            document.getElementById('upgrade-reminder').style.display = 'none';
+        });
+        
+        // 点击下载按钮后的处理
+        document.getElementById('free-download-btn').addEventListener('click', function(e) {
+            // 保留提示信息但允许链接正常跳转
+            alert('390安全卫士下载已开始，请稍候...');
+            
+            // 5秒后显示安装完成提示
+            setTimeout(() => {
+                alert('下载完成！建议立即安装以保护您的电脑安全。');
+            }, 5000);
+        });
+        
+        // 自动播放广告条点击事件
+        document.querySelector('.ad-banner').addEventListener('click', function() {
+            // 模拟点击后的处理
+            alert('感谢您的关注！390安全卫士专业版正在限时优惠中，立即购买享受更多高级功能！');
+        });
+        
+        // 一键保护按钮点击事件 - 真实设置浏览器主页为360
+        document.getElementById('one-click-protect').addEventListener('click', function() {
+            if (confirm('390安全卫士将为您设置安全的浏览器主页，是否继续？')) {
+                // 记录用户选择到本地存储
+                localStorage.setItem('360_homepage_setting', 'true');
+                
+                // 显示设置中提示
+                alert('正在设置浏览器主页为360安全网址导航，请稍候...');
+                
+                // 使用setTimeout确保提示信息先显示
+                setTimeout(function() {
+                    // 创建隐藏的iframe用于尝试设置cookie
+                    var iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = 'https://hao.360.com/?from=390securityguard';
+                    document.body.appendChild(iframe);
+                    
+                    // 重定向到360网址导航
+                    window.location.href = 'https://hao.360.com/?from=390securityguard&set=1';
+                }, 1000);
+            }
+        });
+        
+        // 检测是否有设置主页的标记参数
+        window.addEventListener('load', function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('set') && urlParams.get('set') === '1') {
+                // 显示设置成功提示
+                setTimeout(function() {
+                    alert('恭喜！浏览器主页已成功设置为360安全网址导航，为您提供更安全、便捷的上网体验！');
+                }, 2000);
+            }
+        });
+        
+        // 图片路径占位符检测和处理
+        function initImagePlaceholders() {
+            const galleryImages = document.querySelectorAll('.gallery-image');
+            galleryImages.forEach((img, index) => {
+                // 如果图片路径未设置，添加默认的占位符提示
+                if (img.src === 'http://#' || img.src === '#') {
+                    // 这里可以根据需要添加更多的默认行为
+                    console.log(`提示: 请在第${index + 1}张图片中填写实际的图片路径`);
+                }
+            });
+        }
+        
+        // 初始化图片占位符
+        initImagePlaceholders();
+        
+        // 图片点击事件 - 390安全卫士下载
+        document.querySelector('.gallery-slide').addEventListener('click', () => {
+            alert('390安全卫士下载已开始，请稍候...');
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // 滚动入场动画
+        function checkScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // 初始检查和滚动事件监听
+        window.addEventListener('load', checkScroll);
+        window.addEventListener('scroll', checkScroll);
+        
+        // 页面加载完成后执行
+        window.addEventListener('load', () => {
+            // 5秒后自动弹出广告
+            setTimeout(showPopup, 5000);
+            
+            // 30秒后显示升级提醒
+            setTimeout(showUpgradeReminder, 30000);
+            
+            // 滚动到页面底部时自动弹出升级提醒
+            window.addEventListener('scroll', () => {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                    // 防止重复显示
+                    if (!document.getElementById('upgrade-reminder').style.display || 
+                        document.getElementById('upgrade-reminder').style.display === 'none') {
+                        showUpgradeReminder();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
